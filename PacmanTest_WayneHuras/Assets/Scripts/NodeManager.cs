@@ -19,7 +19,10 @@ public class NodeManager : MonoBehaviour
     private int graphHeight = 25;
 
     [SerializeField]
-    private List<Node> nodes = new List<Node>();
+    private Node[,] nodes;
+
+    [SerializeField]
+    private float distanceToNeighbourNode = 0.2f;
 
     [SerializeField]
     private LayerMask wallLayer;
@@ -36,30 +39,50 @@ public class NodeManager : MonoBehaviour
 
     private void CreateGraph()
     {
+        nodes = new Node[graphWidth, graphHeight];
+
         for(int i = 0; i < graphWidth; i++)
         {
             for(int j = 0; j < graphHeight; j++)
             {
                 Vector3 nodePosition = new Vector3(i * stepSize, j * stepSize) + transform.position;
                 Node node = new Node(nodePosition, wallLayer, emptyAreaLayer);
-                nodes.Add(node);
+                nodes[i, j] = node;
+            }
+        }
+
+        for (int i = 0; i < graphWidth; i++)
+        {
+            for (int j = 0; j < graphHeight; j++)
+            {
+                Node node = nodes[i, j];
+                node.CheckNeighbours(nodes, distanceToNeighbourNode);
+                Debug.Log(node.neighbours.Count);
             }
         }
     }
 
     private void OnDrawGizmos()
     {
-        foreach(Node node in nodes)
+        if (nodes == null)
+            return;
+
+        for (int i = 0; i < graphWidth; i++)
         {
-            if (!node.canPlacePellet || !node.isTraversable)
+            for (int j = 0; j < graphHeight; j++)
             {
-                Gizmos.color = Color.clear;
-                Gizmos.DrawSphere(node.position, 0.1f);
-            }
-            else
-            {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawSphere(node.position, 0.1f);
+                Node node = nodes[i, j];
+
+                if (!node.canPlacePellet || !node.isTraversable)
+                {
+                    Gizmos.color = Color.clear;
+                    Gizmos.DrawSphere(node.position, 0.1f);
+                }
+                else
+                {
+                    Gizmos.color = Color.yellow;
+                    Gizmos.DrawSphere(node.position, 0.1f);
+                }
             }
         }
     }

@@ -32,7 +32,23 @@ public class Node
         return hitColliders.Length > 0 ? false : true;
     }
 
-    public void AddNeighbour(Node neighbour)
+    public void CheckNeighbours(Node[,] nodes, float distanceToNeighbourNode)
+    {
+        foreach(Node node in nodes)
+        {
+            if (node == this)
+                continue;
+
+            float dist = Vector2.Distance(position, node.position);
+
+            if (dist <= distanceToNeighbourNode * 1.1)
+            {
+                AddNeighbour(node);
+            }
+        }
+    }
+
+    private void AddNeighbour(Node neighbour)
     {
         neighbours.Add(neighbour);
     }
