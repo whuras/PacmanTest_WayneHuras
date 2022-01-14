@@ -8,8 +8,9 @@ public abstract class EnemyMovement : Movement
     private GameObject homeGameObject;
     protected Node homeNode;
     protected Node prevNode;
+    protected Node forbiddenNode; // used in Run state to prevent backtracking
 
-    public EnemyStateManager.EnemyState currentEnemyState = EnemyStateManager.EnemyState.Scatter; // set for testing
+    public EnemyStateManager.EnemyState currentEnemyState;
     private new void Start()
     {
         base.Start();
@@ -42,10 +43,12 @@ public abstract class EnemyMovement : Movement
 
             if (currentEnemyState == EnemyStateManager.EnemyState.Chase)
             {
+                forbiddenNode = null;
                 targetNode = NextChaseNode();
             }
             else if(currentEnemyState == EnemyStateManager.EnemyState.Scatter)
             {
+                forbiddenNode = null;
                 targetNode = NextScatterNode();
             }
             else if(currentEnemyState == EnemyStateManager.EnemyState.Run)
@@ -86,7 +89,31 @@ public abstract class EnemyMovement : Movement
         return nextValidNode;
     }
 
-    protected abstract Node NextRunNode();
+    protected Node NextRunNode()
+    {
+        Node nextNode = null;
+
+        // forbiddenNode allows ghost to immediatedly backtrack when running,
+        // but then prevents backtracking afterwards
+        if (forbiddenNode == null)
+        {
+            nextNode = prevNode;
+            forbiddenNode = prevNode;
+        }
+        else
+        {
+            foreach (Node neighbour in currentNode.neighbours)
+            {
+                if (neighbour.isTraversable && neighbour != prevNode)
+                {
+                    nextNode = neighbour;
+                    break;
+                }
+            }
+        }
+
+        return nextNode;
+    }
 
     protected Node GetHomeNode(GameObject homeGameObject)
     {

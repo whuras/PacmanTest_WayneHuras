@@ -6,6 +6,8 @@ public class EnemyMovementRed : EnemyMovement
 {
     protected override Node NextChaseNode()
     {
+
+
         PathFinding pathFinding = new PathFinding();
         PlayerMovement playerMovement = FindObjectOfType<PlayerMovement>();
         List<Node> excludeFromPathFinding = new List<Node> { prevNode }; // ghosts should not be able to turn around in chase/scatter
@@ -22,11 +24,6 @@ public class EnemyMovementRed : EnemyMovement
         }
 
         return currentNode;
-    }
-
-    protected override Node NextRunNode()
-    {
-        throw new System.NotImplementedException();
     }
 
     protected override Node TargetNode()

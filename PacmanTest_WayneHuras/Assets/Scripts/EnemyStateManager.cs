@@ -27,6 +27,24 @@ public class EnemyStateManager : MonoBehaviour
 
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            ChangeState(EnemyState.Chase);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            ChangeState(EnemyState.Scatter);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            ChangeState(EnemyState.Run);
+        }
+    }
+
     private void MaintainSingleton()
     {
         if (instance != null && instance != this)
