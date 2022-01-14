@@ -56,7 +56,7 @@ public class NodeManager : MonoBehaviour
             for (int j = 0; j < graphHeight; j++)
             {
                 Node node = nodes[i, j];
-                node.CheckNeighbours(nodes, distanceToNeighbourNode);
+                node.UpdateNeighbours(nodes, distanceToNeighbourNode);
             }
         }
     }

@@ -36,7 +36,7 @@ public class PlayerMovement : Movement
             if (!isMoving)
             {
                 desiredDirection = direction;
-                targetNode = currentNode.GetNeighbourInDirection(desiredDirection);
+                targetNode = currentNode.GetNeighbourInDirection(desiredDirection, true);
             }
             else
             {
@@ -51,7 +51,7 @@ public class PlayerMovement : Movement
 
         if (queuedDirection != Vector2.zero)
         {
-            queuedNode = currentNode.GetNeighbourInDirection(queuedDirection);
+            queuedNode = currentNode.GetNeighbourInDirection(queuedDirection, true);
         }
 
         if (queuedNode != null)
@@ -64,7 +64,7 @@ public class PlayerMovement : Movement
         }
         else
         {
-            nextNode = currentNode.GetNeighbourInDirection(desiredDirection);
+            nextNode = currentNode.GetNeighbourInDirection(desiredDirection, true);
         }
 
         return nextNode;

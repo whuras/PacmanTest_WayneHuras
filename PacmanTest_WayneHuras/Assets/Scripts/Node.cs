@@ -32,7 +32,7 @@ public class Node
         return hitColliders.Length > 0 ? false : true;
     }
 
-    public void CheckNeighbours(Node[,] nodes, float distanceToNeighbourNode)
+    public void UpdateNeighbours(Node[,] nodes, float distanceToNeighbourNode)
     {
         foreach(Node node in nodes)
         {
@@ -41,19 +41,19 @@ public class Node
 
             float dist = Vector2.Distance(position, node.position);
 
-            if (dist <= distanceToNeighbourNode * 1.1 && node.isTraversable)
+            if (dist <= distanceToNeighbourNode * 1.1)
             {
                 AddNeighbour(node);
             }
         }
     }
 
-    public Node GetNeighbourInDirection(Vector2 direction)
+    public Node GetNeighbourInDirection(Vector2 direction, bool isTraversable)
     {
         foreach(Node neighbour in neighbours)
         {
             Vector2 testDirection = (neighbour.position - position).normalized;
-            if (testDirection == direction)
+            if (testDirection == direction && isTraversable == neighbour.isTraversable)
             {
                 return neighbour;
             }
