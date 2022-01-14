@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Node
 {
-    public Vector3 position { get; private set; }
+    public Vector2 position { get; private set; }
     public List<Node> neighbours { get; private set; }
     public bool isTraversable { get; private set; }
     public bool canPlacePellet { get; private set; }
@@ -41,11 +41,25 @@ public class Node
 
             float dist = Vector2.Distance(position, node.position);
 
-            if (dist <= distanceToNeighbourNode * 1.1)
+            if (dist <= distanceToNeighbourNode * 1.1 && node.isTraversable)
             {
                 AddNeighbour(node);
             }
         }
+    }
+
+    public Node GetNeighbourInDirection(Vector2 direction)
+    {
+        foreach(Node neighbour in neighbours)
+        {
+            Vector2 testDirection = (neighbour.position - position).normalized;
+            if (testDirection == direction)
+            {
+                return neighbour;
+            }
+        }
+
+        return null;
     }
 
     private void AddNeighbour(Node neighbour)

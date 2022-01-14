@@ -57,9 +57,35 @@ public class NodeManager : MonoBehaviour
             {
                 Node node = nodes[i, j];
                 node.CheckNeighbours(nodes, distanceToNeighbourNode);
-                Debug.Log(node.neighbours.Count);
             }
         }
+    }
+
+    public Node ClosestNode(Vector3 position)
+    {
+        float closestDistance = float.MaxValue;
+        Node closestNode = null;
+
+        for(int i = 0; i < graphWidth; i++)
+        {
+            for(int j = 0; j < graphHeight; j++)
+            {
+                Node testNode = nodes[i, j];
+                float testDistance = Vector3.Distance(position, testNode.position);
+                if(testDistance < closestDistance)
+                {
+                    closestDistance = testDistance;
+                    closestNode = testNode;
+                }
+            }
+        }
+
+        if(closestNode == null)
+        {
+            Debug.LogError("Closest node is null -> NodeManager.ClosestNode()");
+        }
+
+        return closestNode;
     }
 
     private void OnDrawGizmos()
