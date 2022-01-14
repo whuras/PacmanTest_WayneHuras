@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : Movement
 {
-    private Vector2 desiredDirection = Vector2.zero;
+    public Vector2 desiredDirection { get; private set; }
     private Vector2 queuedDirection = Vector2.zero;
     private Node queuedNode;
 
@@ -50,7 +50,7 @@ public class PlayerMovement : Movement
         }
     }
 
-    protected Node NextNode()
+    public Node NextNode()
     {
         Node nextNode;
 

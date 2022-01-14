@@ -7,7 +7,7 @@ public abstract class Movement : MonoBehaviour
     [SerializeField]
     protected float speed = 2f;
     public Node currentNode { get; protected set; } // node the unit is on / has reached
-    protected Node targetNode; // node the unit is heading to
+    public Node targetNode { get; protected set; } // node the unit is heading to
     protected float reachedDistance = 0.01f;
 
     protected bool isMoving = false;

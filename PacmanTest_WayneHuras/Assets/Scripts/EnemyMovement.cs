@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public abstract class EnemyMovement : Movement
 {
@@ -17,7 +18,7 @@ public abstract class EnemyMovement : Movement
         EnemyStateManager.Instance.AddEnemyToEnemyStateManager(this);
         homeNode = GetHomeNode(homeGameObject);
         
-        targetNode = NextChaseNode();
+        targetNode = NextScatterNode();
     }
 
     private void Update()
@@ -78,6 +79,7 @@ public abstract class EnemyMovement : Movement
         // If the enemy reached the closest node to their home then go to the next neighbour
         // this makes the enemy circle around area rather than stop
         Node nextValidNode = currentNode;
+        
         foreach (Node neighbour in currentNode.neighbours)
         {
             if (neighbour == prevNode)
@@ -102,14 +104,11 @@ public abstract class EnemyMovement : Movement
         }
         else
         {
-            foreach (Node neighbour in currentNode.neighbours)
-            {
-                if (neighbour.isTraversable && neighbour != prevNode)
-                {
-                    nextNode = neighbour;
-                    break;
-                }
-            }
+            // Select random neighbour to run away to
+            List<Node> copyOfNeighbours = currentNode.neighbours.Where(x => x != prevNode && x.isTraversable).ToList();
+            int rndIndex = Random.Range(0, copyOfNeighbours.Count);
+
+            nextNode = copyOfNeighbours[rndIndex];
         }
 
         return nextNode;
@@ -121,5 +120,4 @@ public abstract class EnemyMovement : Movement
         Node closestNode = NodeManager.Instance.ClosestNode(homePosition);
         return closestNode;
     }
-    protected abstract Node TargetNode();
 }
