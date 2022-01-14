@@ -24,11 +24,6 @@ public class EnemyMovementRed : EnemyMovement
         return currentNode;
     }
 
-    protected override Node NextScatterNode()
-    {
-        throw new System.NotImplementedException();
-    }
-
     protected override Node NextRunNode()
     {
         throw new System.NotImplementedException();

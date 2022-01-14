@@ -6,7 +6,7 @@ public abstract class EnemyMovement : Movement
 {
     [SerializeField]
     private GameObject homeGameObject;
-    private Node homeNode;
+    protected Node homeNode;
     protected Node prevNode;
 
     public EnemyStateManager.EnemyState currentEnemyState = EnemyStateManager.EnemyState.Scatter; // set for testing
@@ -56,7 +56,36 @@ public abstract class EnemyMovement : Movement
     }
 
     protected abstract Node NextChaseNode();
-    protected abstract Node NextScatterNode();
+    protected Node NextScatterNode()
+    {
+        PathFinding pathFinding = new PathFinding();
+        List<Node> excludeFromPathFinding = new List<Node> { prevNode }; // ghosts should not be able to turn around in chase/scatter
+
+        List<Node> path = pathFinding.FindPath(currentNode, homeNode, excludeFromPathFinding);
+        if (path != null && path.Count > 1)
+        {
+            // Debugging
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                Debug.DrawLine(path[i].position, path[i + 1].position, Color.blue, 1f);
+            }
+            return path[1];
+        }
+
+        // If the enemy reached the closest node to their home then go to the next neighbour
+        // this makes the enemy circle around area rather than stop
+        Node nextValidNode = currentNode;
+        foreach (Node neighbour in currentNode.neighbours)
+        {
+            if (neighbour == prevNode)
+                continue;
+
+            nextValidNode = neighbour;
+        }
+
+        return nextValidNode;
+    }
+
     protected abstract Node NextRunNode();
 
     protected Node GetHomeNode(GameObject homeGameObject)
