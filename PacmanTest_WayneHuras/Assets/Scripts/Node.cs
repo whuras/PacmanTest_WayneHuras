@@ -9,12 +9,23 @@ public class Node
     public bool isTraversable { get; private set; }
     public bool canPlacePellet { get; private set; }
 
-    public Node(Vector3 position, LayerMask wallLayer, LayerMask emptyLayer)
+    // For Pathfinding
+    public int iPos;
+    public int jPos;
+    public int gCost;
+    public int hCost;
+    public int fCost;
+    public Node prevNode;
+
+    public Node(Vector3 position, LayerMask wallLayer, LayerMask emptyLayer, int i, int j)
     {
         this.position = position;
         neighbours = new List<Node>();
         isTraversable = IsTraversable(wallLayer);
         canPlacePellet = CanPlacePellet(emptyLayer);
+
+        iPos = i;
+        jPos = j;
     }
 
     private bool CanPlacePellet(LayerMask emptyLayer)

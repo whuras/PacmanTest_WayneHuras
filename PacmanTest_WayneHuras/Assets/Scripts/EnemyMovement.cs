@@ -7,41 +7,57 @@ public abstract class EnemyMovement : Movement
     [SerializeField]
     private GameObject homeGameObject;
     private Node homeNode;
+    protected Node prevNode;
 
-    public EnemyStateManager.EnemyState currentEnemyState;
-    private void Start()
+    public EnemyStateManager.EnemyState currentEnemyState = EnemyStateManager.EnemyState.Scatter; // set for testing
+    private new void Start()
     {
+        base.Start();
         EnemyStateManager.Instance.AddEnemyToEnemyStateManager(this);
         homeNode = GetHomeNode(homeGameObject);
+        
+        targetNode = NextChaseNode();
     }
 
     private void Update()
     {
-        if (currentEnemyState == EnemyStateManager.EnemyState.Chase)
+        if (targetNode != null)
         {
-            Chase();
-        }
-        else if (currentEnemyState == EnemyStateManager.EnemyState.Scatter)
-        {
-            Scatter();
-        }
-        else if (currentEnemyState == EnemyStateManager.EnemyState.Run)
-        {
-            Run();
+            MoveToNode(targetNode);
         }
     }
 
-    protected abstract void Chase();
-
-    private void Run()
+    protected override void MoveToNode(Node node)
     {
-        // common with homeNode
+        isMoving = true;
+
+        transform.position += speed * Time.deltaTime * ((Vector3)node.position - transform.position).normalized;
+
+        if (Vector3.Distance(transform.position, node.position) <= reachedDistance)
+        {
+            transform.position = node.position;
+
+            prevNode = currentNode;
+            currentNode = targetNode;
+
+            if (currentEnemyState == EnemyStateManager.EnemyState.Chase)
+            {
+                targetNode = NextChaseNode();
+            }
+            else if(currentEnemyState == EnemyStateManager.EnemyState.Scatter)
+            {
+                targetNode = NextScatterNode();
+            }
+            else if(currentEnemyState == EnemyStateManager.EnemyState.Run)
+            {
+                targetNode = NextRunNode();
+            }
+        }
     }
 
-    private void Scatter()
-    {
-        // common
-    }
+    protected abstract Node NextChaseNode();
+    protected abstract Node NextScatterNode();
+    protected abstract Node NextRunNode();
 
     protected Node GetHomeNode(GameObject homeGameObject)
     {

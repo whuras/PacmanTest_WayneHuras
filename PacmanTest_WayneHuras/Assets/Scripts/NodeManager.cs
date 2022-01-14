@@ -14,12 +14,15 @@ public class NodeManager : MonoBehaviour
 
     [SerializeField]
     private int graphWidth = 20;
+    public int GetGraphWidth() => graphWidth;
 
     [SerializeField]
     private int graphHeight = 25;
+    public int GetGraphHeight() => graphHeight;
 
     [SerializeField]
     private Node[,] nodes;
+    public Node[,] GetAllNodes() => nodes;
 
     [SerializeField]
     private float distanceToNeighbourNode = 0.2f;
@@ -46,7 +49,7 @@ public class NodeManager : MonoBehaviour
             for(int j = 0; j < graphHeight; j++)
             {
                 Vector3 nodePosition = new Vector3(i * stepSize, j * stepSize) + transform.position;
-                Node node = new Node(nodePosition, wallLayer, emptyAreaLayer);
+                Node node = new Node(nodePosition, wallLayer, emptyAreaLayer, i, j);
                 nodes[i, j] = node;
             }
         }

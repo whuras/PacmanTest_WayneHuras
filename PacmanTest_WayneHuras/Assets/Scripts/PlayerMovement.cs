@@ -16,6 +16,11 @@ public class PlayerMovement : Movement
         Vector2.right
     };
 
+    private new void Start()
+    {
+        base.Start();
+    }
+
     private void Update()
     {
         if (targetNode != null)
@@ -45,7 +50,7 @@ public class PlayerMovement : Movement
         }
     }
 
-    protected override Node NextNode()
+    protected Node NextNode()
     {
         Node nextNode;
 
@@ -74,5 +79,20 @@ public class PlayerMovement : Movement
     {
         queuedNode = null;
         queuedDirection = Vector2.zero;
+    }
+
+    protected override void MoveToNode(Node node)
+    {
+        isMoving = true;
+
+        transform.position += speed * Time.deltaTime * ((Vector3)node.position - transform.position).normalized;
+
+        if (Vector3.Distance(transform.position, node.position) <= reachedDistance)
+        {
+            transform.position = node.position;
+            currentNode = targetNode;
+
+            targetNode = NextNode();
+        }
     }
 }
