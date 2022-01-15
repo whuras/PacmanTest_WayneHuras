@@ -8,40 +8,64 @@ public class EnemyStateManager : MonoBehaviour
     public static EnemyStateManager Instance => instance;
     public enum EnemyState
     {
+        Wait,
         Chase,
         Scatter,
         Run
     }
 
     private List<EnemyMovement> enemies = new List<EnemyMovement>();
+
+    // Timers
+    private float timer = 0;
+    private float scatterTimer = 7; // Enemies scatter for 7 seconds
+    private float chaseTimer = 20; // Enemies Chase for 20 seconds
+    private float runTimer = 7; // Enemies Run for 10 seconds
+
     public void AddEnemyToEnemyStateManager(EnemyMovement enemy) => enemies.Add(enemy);
 
     private void Awake() => MaintainSingleton();
 
-    public void ChangeState(EnemyState newState)
+    public void ChangeState(EnemyMovement enemy, EnemyState newState)
     {
-        foreach(EnemyMovement enemy in enemies)
+        if(newState == EnemyState.Run)
+        {
+            enemy.ActivateRunState(runTimer);
+        }
+        else
         {
             enemy.currentEnemyState = newState;
         }
+    }
 
+    public void ChangeAllEnemyStates(EnemyState newState)
+    {
+        foreach(EnemyMovement enemy in enemies)
+        {
+            ChangeState(enemy, newState);
+        }
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        foreach(EnemyMovement enemy in enemies)
         {
-            ChangeState(EnemyState.Chase);
-        }
+            if(enemy.currentEnemyState != EnemyState.Wait && enemy.currentEnemyState != EnemyState.Run)
+            {
+                if (timer > scatterTimer + chaseTimer)
+                    timer = 0;
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            ChangeState(EnemyState.Scatter);
-        }
+                timer += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            ChangeState(EnemyState.Run);
+                if (timer < scatterTimer && enemy.currentEnemyState != EnemyState.Scatter)
+                {
+                    ChangeState(enemy, EnemyState.Scatter);
+                }   
+                else if (timer > scatterTimer && timer < chaseTimer && enemy.currentEnemyState != EnemyState.Chase)
+                {
+                    ChangeState(enemy, EnemyState.Chase);
+                }   
+            }
         }
     }
 
@@ -54,7 +78,6 @@ public class EnemyStateManager : MonoBehaviour
         else
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
         }
     }
 }

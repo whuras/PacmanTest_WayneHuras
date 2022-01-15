@@ -6,27 +6,70 @@ using System.Linq;
 public abstract class EnemyMovement : Movement
 {
     [SerializeField]
+    private float runSpeed = 1;
+
+    [SerializeField]
+    private float normalSpeed = 2;
+
+    [SerializeField]
     private GameObject homeGameObject;
+    private Node restartNode;
     protected Node homeNode;
     protected Node prevNode;
     protected Node forbiddenNode; // used in Run state to prevent backtracking
 
     public EnemyStateManager.EnemyState currentEnemyState;
+    private EnemyStateManager.EnemyState prevState;
+
+    private Ghost ghost;
+
     private new void Start()
     {
         base.Start();
+        ghost = GetComponent<Ghost>();
         EnemyStateManager.Instance.AddEnemyToEnemyStateManager(this);
         homeNode = GetHomeNode(homeGameObject);
-        
-        targetNode = NextScatterNode();
+        restartNode = currentNode;
     }
 
     private void Update()
     {
-        if (targetNode != null)
+        if (currentEnemyState != EnemyStateManager.EnemyState.Wait)
         {
             MoveToNode(targetNode);
         }
+    }
+
+    public void RestartGhost()
+    {
+        CancelInvoke();
+        ghost.ShowNormalSprite();
+        speed = normalSpeed;
+        transform.position = restartNode.position;
+        currentNode = restartNode;
+        targetNode = currentNode;
+        currentEnemyState = EnemyStateManager.EnemyState.Scatter;
+    }
+
+    public void ActivateRunState(float runDuration)
+    {
+        if(currentEnemyState != EnemyStateManager.EnemyState.Wait)
+        {
+            ghost.ShowRunSprite();
+            speed = runSpeed;
+            prevState = currentEnemyState;
+            currentEnemyState = EnemyStateManager.EnemyState.Run;
+
+            CancelInvoke();
+            Invoke("LeaveRunState", runDuration);
+        }
+    }
+
+    private void LeaveRunState()
+    {
+        ghost.ShowNormalSprite();
+        speed = normalSpeed;
+        currentEnemyState = prevState;
     }
 
     protected override void MoveToNode(Node node)

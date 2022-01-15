@@ -17,5 +17,6 @@ public abstract class Movement : MonoBehaviour
     protected void Start()
     {
         currentNode = NodeManager.Instance.ClosestNode(gameObject.transform.position);
+        targetNode = currentNode;
     }
 }

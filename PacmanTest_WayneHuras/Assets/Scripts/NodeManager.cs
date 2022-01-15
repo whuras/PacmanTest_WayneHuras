@@ -102,9 +102,14 @@ public class NodeManager : MonoBehaviour
             {
                 Node node = nodes[i, j];
 
-                if (!node.canPlacePellet || !node.isTraversable)
+                if (!node.isTraversable)
                 {
-                    Gizmos.color = Color.clear;
+                    Gizmos.color = Color.black;
+                    Gizmos.DrawSphere(node.position, 0.1f);
+                }
+                else if (!node.canPlacePellet)
+                {
+                    Gizmos.color = Color.blue;
                     Gizmos.DrawSphere(node.position, 0.1f);
                 }
                 else
