@@ -98,6 +98,9 @@ public class PelletManager : MonoBehaviour
         remainingPellets = totalPellets;
     }
 
+    public bool HaveThirtyPelletsBeenEaten() => totalPellets - remainingPellets > 30;
+    public bool HaveOneThirdPelletBeenEaten() => (remainingPellets / (float)totalPellets) < (float)1/3;
+
     private void MaintainSingleton()
     {
         if (instance != null && instance != this)

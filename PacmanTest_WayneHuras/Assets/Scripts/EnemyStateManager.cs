@@ -50,7 +50,23 @@ public class EnemyStateManager : MonoBehaviour
     {
         foreach(EnemyMovement enemy in enemies)
         {
-            if(enemy.currentEnemyState != EnemyState.Wait && enemy.currentEnemyState != EnemyState.Run)
+            // Activate Blue Enemy
+            if (enemy.currentEnemyState == EnemyState.Wait &&
+                enemy.gameObject.GetComponent<EnemyMovementBlue>() && 
+                PelletManager.Instance.HaveThirtyPelletsBeenEaten())
+            {
+                enemy.currentEnemyState = EnemyState.Scatter;
+            }
+
+            // Activate Orange Enemy
+            if (enemy.currentEnemyState == EnemyState.Wait && 
+                enemy.gameObject.GetComponent<EnemyMovementOrange>() && 
+                PelletManager.Instance.HaveOneThirdPelletBeenEaten())
+            {
+                enemy.currentEnemyState = EnemyState.Scatter;
+            }
+
+            if (enemy.currentEnemyState != EnemyState.Wait && enemy.currentEnemyState != EnemyState.Run)
             {
                 if (timer > scatterTimer + chaseTimer)
                     timer = 0;
