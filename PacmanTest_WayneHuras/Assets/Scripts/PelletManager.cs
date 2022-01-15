@@ -22,7 +22,10 @@ public class PelletManager : MonoBehaviour
     [SerializeField]
     private GameObject[] powerPelletPositions = new GameObject[4];
 
+    private List<Pellet> pellets;
+
     public int remainingPellets { get; private set; }
+    private int totalPellets;
     public void DecrementRemainingPellets() => remainingPellets -= 1;
     public void IncrementRemainingPellets() => remainingPellets += 1;
 
@@ -30,13 +33,19 @@ public class PelletManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("start pellet manager");
+        pellets = new List<Pellet>();
+        PopulatePellets();
+        totalPellets = remainingPellets;
+    }
+
+    private void PopulatePellets()
+    {
         NodeManager nodeManager = NodeManager.Instance;
 
         Node[,] nodes = nodeManager.GetAllNodes();
-        for(int i = 0; i < nodeManager.GetGraphWidth(); i++)
+        for (int i = 0; i < nodeManager.GetGraphWidth(); i++)
         {
-            for(int j = 0; j < nodeManager.GetGraphHeight(); j++)
+            for (int j = 0; j < nodeManager.GetGraphHeight(); j++)
             {
                 Node node = nodes[i, j];
                 bool powerPelletCreated = false;
@@ -52,6 +61,9 @@ public class PelletManager : MonoBehaviour
 
                             Pellet powerPellet = powerPelletGO.GetComponent<Pellet>();
                             powerPellet.SetPointValue(powerPelletPointValue);
+
+                            pellets.Add(powerPellet);
+
                             IncrementRemainingPellets();
                             powerPelletCreated = true;
                             break;
@@ -67,10 +79,23 @@ public class PelletManager : MonoBehaviour
 
                     Pellet pellet = pelletGO.GetComponent<Pellet>();
                     pellet.SetPointValue(pelletPointValue);
+
+                    pellets.Add(pellet);
+
                     IncrementRemainingPellets();
                 }
             }
         }
+    }
+
+    public void ResetPellets()
+    {
+        foreach(Pellet pellet in pellets)
+        {
+            pellet.gameObject.SetActive(true);
+        }
+
+        remainingPellets = totalPellets;
     }
 
     private void MaintainSingleton()

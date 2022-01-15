@@ -12,14 +12,29 @@ public class GameManager : MonoBehaviour
     private GameObject player;
 
     [SerializeField]
-    private EnemyMovement[] enemies;
+    private List<GameObject> enemies;
+
+    [SerializeField]
+    private float newRoundWaitTime = 3f;
+
+    [SerializeField]
+    private int startingLives = 3;
+    public int lives { get; private set; }
+    public void DecrementLives() => lives -= 0;
+    private void SetLives(int value) => lives = value;
 
     public int score { get; private set; }
     public void IncreaseScore(int amount) => score += amount;
+    private void SetScore(int value) => score = value;
 
     private void Awake()
     {
         MaintainSingleton();
+    }
+
+    private void Start()
+    {
+        NewGame();
     }
 
     private void Update()
@@ -30,7 +45,7 @@ public class GameManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            SceneManager.LoadScene("Level");
+            NewGame();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
@@ -49,7 +64,7 @@ public class GameManager : MonoBehaviour
         if(pelletManager.remainingPellets <= 0)
         {
             player.SetActive(false);
-            StartCoroutine(NewRound());
+            Invoke("NewRound", newRoundWaitTime);
         }
     }
 
@@ -64,14 +79,42 @@ public class GameManager : MonoBehaviour
         EnemyStateManager.Instance.ChangeAllEnemyStates(EnemyStateManager.EnemyState.Run);
     }
 
-    private IEnumerator NewRound()
+    public void EatPlayer()
     {
-        yield return new WaitForSeconds(3);
+        DecrementLives();
 
-        // TODO New Round
+        if(lives <= 0)
+        {
+            GameOver();
+        }
+        else
+        {
+            ResetPositions();
+        }
+    }
+
+    private void ResetPositions()
+    {
+        foreach(GameObject go in enemies)
+        {
+            go.GetComponent<EnemyMovement>().RestartEnemy();
+        }
+
+        player.GetComponent<PlayerMovement>().RestartPlayer();
+    }
+
+    private void NewGame()
+    {
+        SetScore(0);
+        SetLives(startingLives);
+        NewRound();
+    }
+
+    private void NewRound()
+    {
         Debug.Log("New Round");
-
-        yield return null;
+        PelletManager pelletManager = PelletManager.Instance;
+        pelletManager.ResetPellets();
     }
 
     private void MaintainSingleton()
@@ -85,5 +128,10 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
+    }
+
+    private void GameOver()
+    {
+
     }
 }

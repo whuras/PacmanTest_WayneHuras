@@ -34,10 +34,18 @@ public class Ghost : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player" && enemyMovement.currentEnemyState == EnemyStateManager.EnemyState.Run)
+        if(collision.tag == "Player")
         {
-            GameManager.Instance.EatEnemy(this);
-            enemyMovement.RestartGhost();
+            if(enemyMovement.currentEnemyState == EnemyStateManager.EnemyState.Run)
+            {
+                GameManager.Instance.EatEnemy(this);
+                enemyMovement.ResetEnemy();
+            }
+            else
+            {
+                // Eat Player
+                GameManager.Instance.EatPlayer();
+            }
         }
     }
 }

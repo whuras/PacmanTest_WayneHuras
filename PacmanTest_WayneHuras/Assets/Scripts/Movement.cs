@@ -8,6 +8,7 @@ public abstract class Movement : MonoBehaviour
     protected float speed = 2f;
     public Node currentNode { get; protected set; } // node the unit is on / has reached
     public Node targetNode { get; protected set; } // node the unit is heading to
+    protected Node restartNode;
     protected float reachedDistance = 0.01f;
 
     protected bool isMoving = false;
@@ -18,5 +19,6 @@ public abstract class Movement : MonoBehaviour
     {
         currentNode = NodeManager.Instance.ClosestNode(gameObject.transform.position);
         targetNode = currentNode;
+        restartNode = currentNode;
     }
 }

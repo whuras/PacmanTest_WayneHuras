@@ -49,7 +49,7 @@ public class EnemyMovementPink : EnemyMovement
             }
             return path[1];
         }
-
-        return currentNode;
+        
+        return playerMovement.currentNode;
     }
 }

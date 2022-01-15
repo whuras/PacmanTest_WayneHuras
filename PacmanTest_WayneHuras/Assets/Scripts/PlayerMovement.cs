@@ -34,6 +34,13 @@ public class PlayerMovement : Movement
         }
     }
 
+    public void RestartPlayer()
+    {
+        transform.position = restartNode.position;
+        currentNode = restartNode;
+        targetNode = currentNode;
+    }
+
     public void ReceiveMovementRequest(Vector2 direction)
     {
         if (validDirections.Contains(direction))
