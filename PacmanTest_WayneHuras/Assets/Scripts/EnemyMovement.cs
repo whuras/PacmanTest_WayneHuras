@@ -82,7 +82,7 @@ public abstract class EnemyMovement : Movement
         
         foreach (Node neighbour in currentNode.neighbours)
         {
-            if (neighbour == prevNode)
+            if (neighbour == prevNode || !neighbour.isTraversable)
                 continue;
 
             nextValidNode = neighbour;

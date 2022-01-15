@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyMovementRed : EnemyMovement
 {
+    // Red's target is Pacman's current node
     protected override Node NextChaseNode()
     {
         PathFinding pathFinding = new PathFinding();

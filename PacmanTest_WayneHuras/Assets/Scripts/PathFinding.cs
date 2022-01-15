@@ -15,16 +15,21 @@ public class PathFinding
         openList = new List<Node>();
         closedList = new List<Node>();
 
+        foreach(Node node in excludeNodes)
+        {
+            closedList.Add(node);
+        }
+
         openList.Add(startNode);
 
         for(int i = 0; i < nodeManager.GetGraphWidth(); i++)
         {
             for (int j = 0; j < nodeManager.GetGraphHeight(); j++)
             {
-                Node pathNode = nodes[i, j];
-                pathNode.gCost = int.MaxValue;
-                pathNode.fCost = CalculateFCost(pathNode);
-                pathNode.prevNode = null;
+                Node resetNode = nodes[i, j];
+                resetNode.gCost = int.MaxValue;
+                resetNode.fCost = CalculateFCost(resetNode);
+                resetNode.prevNode = null;
             }
         }
 
@@ -46,7 +51,10 @@ public class PathFinding
 
             foreach(Node neighbour in currentNode.neighbours)
             {
-                if (!neighbour.isTraversable || closedList.Contains(neighbour) || excludeNodes.Contains(neighbour))
+                if (!neighbour.isTraversable && !closedList.Contains(neighbour))
+                    closedList.Add(neighbour);
+                    
+                if (closedList.Contains(neighbour))
                     continue;
 
                 int testGCost = currentNode.gCost + CalculateHCost(currentNode, neighbour);

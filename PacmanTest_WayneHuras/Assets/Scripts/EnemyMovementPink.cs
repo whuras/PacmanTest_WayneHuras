@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyMovementPink : EnemyMovement
 {
+    // Pink's target is two nodes ahead of Pacman
     protected override Node NextChaseNode()
     {
         PathFinding pathFinding = new PathFinding();
