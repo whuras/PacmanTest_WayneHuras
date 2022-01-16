@@ -2,6 +2,7 @@
 This is a recreation of the classic arcade game Pac-Man, developed in Unity 2020.3.7f1.
 
 ### Controls
+- BEST VIEWED IN A 800X600 RESOLUTION
 - After the game has been launched, press any key to start the round.
 - Control Pac-Man with keyboard buttons WASD or Arrow keys.
 - If you get eaten by a ghost 3 times then its game over.
