@@ -11,15 +11,15 @@ This is a recreation of the classic arcade game Pac-Man, developed in Unity 2020
 ### Highlights
 - A* Pathfinding for ghost movement
 - Four movement states for ghost movement:
-  1. Wait - The ghost waits to leave the gated area
-  2. Chase - The ghost moves towards its target tile
-  3. Scatter - The ghost moves towards its pre-designated corner
-  4. Run - The ghost runs away from Pac-Man when it can be eaten
+  - Wait - The ghost waits to leave the gated area
+  - Chase - The ghost moves towards its target tile
+  - Scatter - The ghost moves towards its pre-designated corner
+  - Run - The ghost runs away from Pac-Man when it can be eaten
 - Four Ghost movement "personalities" implemented during Chase-phase:
-  1. Red Ghost targets Pac-Man's current position
-  2. Pink Ghost targets two tiles ahead of Pac-Man
-  3. Blue Ghost targets twice times the distance from the Red Ghost to two tiles ahead of Pac-Man
-  4. Orange Ghost targets Pac-Man's current position if further than 8 tiles of Pac-Man, or its pre-designated corner if within 8 tiles of Pac-Man
+  - Red Ghost targets Pac-Man's current position
+  - Pink Ghost targets two tiles ahead of Pac-Man
+  - Blue Ghost targets twice times the distance from the Red Ghost to two tiles ahead of Pac-Man
+  - Orange Ghost targets Pac-Man's current position if further than 8 tiles of Pac-Man, or its pre-designated corner if within 8 tiles of Pac-Man
  - HighScore SaveSystem using PlayerPrefs
  - Classic features including:
    - Three lives; lose them by getting eaten by a ghost and its Game Over
