@@ -24,50 +24,23 @@ public class EnemyMovementBlue : EnemyMovement
         Node playerFutureFutureNode = playerFutureNode != null ? playerFutureNode.GetNeighbourInDirection(playerMovement.desiredDirection, true) : null;
 
         if (playerFutureFutureNode != null)
-        {
             blueIntermediateTargetNode = playerFutureFutureNode;
-        }
         else if (playerFutureNode != null)
-        {
             blueIntermediateTargetNode = playerFutureNode;
-        }
         else if (playerTargetNode != null)
-        {
             blueIntermediateTargetNode = playerTargetNode;
-        }
         else if (playerCurrentNode != null)
-        {
             blueIntermediateTargetNode = playerCurrentNode;
-        }
         else
-        {
-            Debug.LogError("Inky cannot determine a target! EmenyMovementBlue->NextChaseNode()");
             blueIntermediateTargetNode = null;
-        }
 
         Vector2 blueTargetPosition = blueIntermediateTargetNode.position + (blueIntermediateTargetNode.position - enemyMovementRedPosition);
         blueTargetNode = NodeManager.Instance.ClosestNode(blueTargetPosition);
 
         List<Node> path = pathFinding.FindPath(currentNode, blueTargetNode, excludeFromPathFinding);
         if (path != null && path.Count > 1)
-        {
-            // Debugging
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                Debug.DrawLine(path[i].position, path[i + 1].position, Color.cyan, 1f);
-            }
             return path[1];
-        }
 
-        // Blue's goal node can often become it's prev or current node which returns a null path from Pathfinding.
-        // This allows for Blue to continue on a valid path without being stuck or going backwards by finding a new
-        // neighbour node which is valid.
-        Node safeNode;
-        List<Node> copyOfNeighbours = currentNode.neighbours.Where(x => x != prevNode && x.isTraversable).ToList();
-        int rndIndex = Random.Range(0, copyOfNeighbours.Count);
-
-        safeNode = copyOfNeighbours[rndIndex];
-
-        return safeNode;
+        return NextSafeNode();
     }
 }

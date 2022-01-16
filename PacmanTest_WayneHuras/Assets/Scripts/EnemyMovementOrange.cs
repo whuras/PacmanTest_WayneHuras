@@ -14,15 +14,6 @@ public class EnemyMovementOrange : EnemyMovement
         List<Node> excludeFromPathFinding = new List<Node> { prevNode }; // ghosts should not be able to turn around in chase/scatter
 
         List<Node> path = pathFinding.FindPath(currentNode, playerMovement.currentNode, excludeFromPathFinding);
-        if (path != null && path.Count > 1)
-        {
-            // Debugging
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                Debug.DrawLine(path[i].position, path[i + 1].position, Color.yellow, 1f);
-            }
-            //return path[1];
-        }
 
         if (path.Count > 8)
             return path[1];

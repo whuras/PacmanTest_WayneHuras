@@ -18,37 +18,19 @@ public class EnemyMovementPink : EnemyMovement
         Node playerFutureFutureNode = playerFutureNode != null ? playerFutureNode.GetNeighbourInDirection(playerMovement.desiredDirection, true) : null;
 
         if(playerFutureFutureNode != null)
-        {
             pinkTargetNode = playerFutureFutureNode;
-        }
         else if (playerFutureNode != null)
-        {
             pinkTargetNode = playerFutureNode;
-        }   
         else if (playerTargetNode != null)
-        {
             pinkTargetNode = playerTargetNode;
-        }
         else if (playerCurrentNode != null)
-        {
             pinkTargetNode = playerCurrentNode;
-        }
         else
-        {
-            Debug.LogError("Pinky cannot determine a target! EmenyMovementPink->NextChaseNode()");
             pinkTargetNode = null;
-        }
 
         List <Node> path = pathFinding.FindPath(currentNode, pinkTargetNode, excludeFromPathFinding);
         if (path != null && path.Count > 1)
-        {
-            // Debugging
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                Debug.DrawLine(path[i].position, path[i + 1].position, Color.magenta, 1f);
-            }
             return path[1];
-        }
         
         return playerMovement.currentNode;
     }

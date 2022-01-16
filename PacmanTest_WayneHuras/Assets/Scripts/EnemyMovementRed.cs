@@ -13,15 +13,8 @@ public class EnemyMovementRed : EnemyMovement
 
         List<Node> path = pathFinding.FindPath(currentNode, playerMovement.currentNode, excludeFromPathFinding);
         if (path != null && path.Count > 1)
-        {
-            // Debugging
-            for (int i = 0; i < path.Count - 1; i++)
-            {
-                Debug.DrawLine(path[i].position, path[i + 1].position, Color.red, 1f);
-            }
             return path[1];
-        }
 
-        return currentNode;
+        return NextSafeNode();
     }
 }

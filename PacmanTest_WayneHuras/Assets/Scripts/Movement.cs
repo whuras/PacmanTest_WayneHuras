@@ -6,6 +6,7 @@ public abstract class Movement : MonoBehaviour
 {
     [SerializeField]
     protected float speed = 2f;
+    public void SetSpeed(float value) => speed = value;
     public Node currentNode { get; protected set; } // node the unit is on / has reached
     public Node targetNode { get; protected set; } // node the unit is heading to
     protected Node restartNode; // node the unit goes back to when the player dies

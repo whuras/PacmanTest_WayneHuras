@@ -28,8 +28,6 @@ public class GameManager : MonoBehaviour
     
     public GameState currentGameState { get; private set; }
 
-    private AudioManager audioManager;
-
     public enum GameState
     {
         Wait,
@@ -37,16 +35,9 @@ public class GameManager : MonoBehaviour
         GameOver
     }
 
-    private void Awake()
-    {
-        MaintainSingleton();
-    }
+    private void Awake() => MaintainSingleton();
 
-    private void Start()
-    {
-        audioManager = AudioManager.Instance;
-        EnterWaitState();
-    }
+    private void Start() => EnterWaitState();
 
     private void Update()
     {
@@ -58,7 +49,7 @@ public class GameManager : MonoBehaviour
 
     public void EnterWaitState()
     {
-        audioManager.PlayIntro();
+        AudioManager.Instance.PlayIntro();
         currentGameState = GameState.Wait;
         NewGame();
         EnemyStateManager.Instance.PauseEnemies();
@@ -77,7 +68,7 @@ public class GameManager : MonoBehaviour
 
     public void EnterGameOverState()
     {
-        audioManager.PlayDeath();
+        AudioManager.Instance.PlayDeath();
         currentGameState = GameState.GameOver;
         EnemyStateManager.Instance.PauseEnemies();
         player.SetActive(false);
@@ -107,7 +98,7 @@ public class GameManager : MonoBehaviour
 
     public void EatEnemy(Ghost ghost)
     {
-        audioManager.PlayEatGhost();
+        AudioManager.Instance.PlayEatGhost();
         IncreaseScore(ghost.ghostPointValue);
     }
 

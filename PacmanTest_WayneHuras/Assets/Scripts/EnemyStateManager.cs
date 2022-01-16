@@ -27,44 +27,6 @@ public class EnemyStateManager : MonoBehaviour
 
     private void Awake() => MaintainSingleton();
 
-    public void PauseEnemies()
-    {
-        pauseTimer = true;
-        foreach (EnemyMovement enemy in enemies)
-        {
-            enemy.PauseEnemyMovement();
-        }
-    }
-
-    public void UnpauseEnemies()
-    {
-        pauseTimer = false;
-        foreach (EnemyMovement enemy in enemies)
-        {
-            enemy.UnpauseEnemyMovement();
-        }
-    }
-
-    public void ChangeState(EnemyMovement enemy, EnemyState newState)
-    {
-        if(newState == EnemyState.Run)
-        {
-            enemy.ActivateRunState(runTimer);
-        }
-        else
-        {
-            enemy.currentEnemyState = newState;
-        }
-    }
-
-    public void ChangeAllEnemyStates(EnemyState newState)
-    {
-        foreach(EnemyMovement enemy in enemies)
-        {
-            ChangeState(enemy, newState);
-        }
-    }
-
     private void Update()
     {
         if (!pauseTimer)
@@ -75,28 +37,24 @@ public class EnemyStateManager : MonoBehaviour
                 {
                     // Activate Red Enemy - Immediate
                     if (enemy.gameObject.GetComponent<EnemyMovementRed>())
-                    {
-                        enemy.currentEnemyState = EnemyState.Scatter;
-                    }
+                        enemy.SetCurrentEnemyState(EnemyState.Scatter);
 
                     // Activate Pink Enemy - Immediate
                     if (enemy.gameObject.GetComponent<EnemyMovementPink>())
-                    {
-                        enemy.currentEnemyState = EnemyState.Scatter;
-                    }
+                        enemy.SetCurrentEnemyState(EnemyState.Scatter);
 
                     // Activate Blue Enemy
                     if (enemy.gameObject.GetComponent<EnemyMovementBlue>() &&
                         PelletManager.Instance.HaveThirtyPelletsBeenEaten())
                     {
-                        enemy.currentEnemyState = EnemyState.Scatter;
+                        enemy.SetCurrentEnemyState(EnemyState.Scatter);
                     }
 
                     // Activate Orange Enemy
                     if (enemy.gameObject.GetComponent<EnemyMovementOrange>() &&
                         PelletManager.Instance.HaveOneThirdPelletBeenEaten())
                     {
-                        enemy.currentEnemyState = EnemyState.Scatter;
+                        enemy.SetCurrentEnemyState(EnemyState.Scatter);
                     }
                 }
 
@@ -119,16 +77,69 @@ public class EnemyStateManager : MonoBehaviour
             }
         }
     }
+    public void PauseEnemies()
+    {
+        pauseTimer = true;
+        foreach (EnemyMovement enemy in enemies)
+        {
+            enemy.SetPrevState(enemy.currentEnemyState);
+            enemy.SetCurrentEnemyState(EnemyState.Wait);
+        }
+    }
+
+    public void UnpauseEnemies()
+    {
+        pauseTimer = false;
+        foreach (EnemyMovement enemy in enemies)
+            enemy.SetCurrentEnemyState(enemy.prevState);
+    }
+
+    public void ChangeState(EnemyMovement enemy, EnemyState newState)
+    {
+        if (newState == EnemyState.Run)
+            ActivateRunState(enemy);
+        else
+            enemy.SetCurrentEnemyState(newState);
+    }
+
+    private void ActivateRunState(EnemyMovement enemy)
+    {
+        if (enemy.currentEnemyState != EnemyState.Wait)
+        {
+            enemy.ghost.ShowRunSprite();
+            enemy.SetSpeed(enemy.runSpeed);
+            enemy.SetPrevState(enemy.currentEnemyState);
+            enemy.SetCurrentEnemyState(EnemyState.Run);
+
+            CancelInvoke();
+            Invoke("LeaveRunState", runTimer);
+        }
+    }
+
+    private void LeaveRunState()
+    {
+        foreach (EnemyMovement enemy in enemies)
+        {
+            if (enemy.currentEnemyState == EnemyState.Run)
+            {
+                enemy.ghost.ShowNormalSprite();
+                enemy.SetSpeed(enemy.normalSpeed);
+                enemy.SetCurrentEnemyState(enemy.prevState);
+            }
+        }
+    }
+
+    public void ChangeAllEnemyStates(EnemyState newState)
+    {
+        foreach (EnemyMovement enemy in enemies)
+            ChangeState(enemy, newState);
+    }
 
     private void MaintainSingleton()
     {
         if (instance != null && instance != this)
-        {
             Destroy(this);
-        }
         else
-        {
             instance = this;
-        }
     }
 }

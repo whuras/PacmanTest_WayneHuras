@@ -5,11 +5,8 @@ using System.Linq;
 
 public abstract class EnemyMovement : Movement
 {
-    [SerializeField]
-    private float runSpeed = 1;
-
-    [SerializeField]
-    private float normalSpeed = 2;
+    public float runSpeed = 1;
+    public float normalSpeed = 2;
 
     [SerializeField]
     private GameObject homeGameObject;
@@ -17,11 +14,15 @@ public abstract class EnemyMovement : Movement
     protected Node prevNode;
     protected Node forbiddenNode; // used in Run state to prevent backtracking
 
-    public EnemyStateManager.EnemyState currentEnemyState;
-    private EnemyStateManager.EnemyState prevState;
-    private EnemyStateManager.EnemyState initialState;
+    public EnemyStateManager.EnemyState currentEnemyState { get; private set; }
+    public EnemyStateManager.EnemyState prevState { get; private set; }
+    public EnemyStateManager.EnemyState initialState { get; private set; }
 
-    private Ghost ghost;
+    public void SetCurrentEnemyState(EnemyStateManager.EnemyState state) => currentEnemyState = state;
+    public void SetPrevState(EnemyStateManager.EnemyState state) => prevState = state;
+    public void SetInitialState(EnemyStateManager.EnemyState state) => initialState = state;
+
+    public Ghost ghost { get; private set; }
 
     private new void Start()
     {
@@ -38,17 +39,6 @@ public abstract class EnemyMovement : Movement
     {
         if (currentEnemyState != EnemyStateManager.EnemyState.Wait)
             MoveToNode(targetNode);
-    }
-
-    public void PauseEnemyMovement()
-    {
-        prevState = currentEnemyState;
-        currentEnemyState = EnemyStateManager.EnemyState.Wait;
-    }
-
-    public void UnpauseEnemyMovement()
-    {
-        currentEnemyState = prevState;
     }
 
     // Reset Enemy to initial position on map
@@ -75,57 +65,6 @@ public abstract class EnemyMovement : Movement
         targetNode = currentNode;
     }
 
-    public void ActivateRunState(float runDuration)
-    {
-        if(currentEnemyState != EnemyStateManager.EnemyState.Wait)
-        {
-            ghost.ShowRunSprite();
-            speed = runSpeed;
-            prevState = currentEnemyState;
-            currentEnemyState = EnemyStateManager.EnemyState.Run;
-
-            CancelInvoke();
-            Invoke("LeaveRunState", runDuration);
-        }
-    }
-
-    private void LeaveRunState()
-    {
-        ghost.ShowNormalSprite();
-        speed = normalSpeed;
-        currentEnemyState = prevState;
-    }
-
-    protected override void MoveToNode(Node node)
-    {
-        isMoving = true;
-
-        transform.position += speed * Time.deltaTime * ((Vector3)node.position - transform.position).normalized;
-
-        if (Vector3.Distance(transform.position, node.position) <= reachedDistance)
-        {
-            transform.position = node.position;
-
-            prevNode = currentNode;
-            currentNode = targetNode;
-
-            if (currentEnemyState == EnemyStateManager.EnemyState.Chase)
-            {
-                forbiddenNode = null;
-                targetNode = NextChaseNode();
-            }
-            else if(currentEnemyState == EnemyStateManager.EnemyState.Scatter)
-            {
-                forbiddenNode = null;
-                targetNode = NextScatterNode();
-            }
-            else if(currentEnemyState == EnemyStateManager.EnemyState.Run)
-            {
-                targetNode = NextRunNode();
-            }
-        }
-    }
-
     protected abstract Node NextChaseNode();
     protected Node NextScatterNode()
     {
@@ -146,7 +85,7 @@ public abstract class EnemyMovement : Movement
         // If the enemy reached the closest node to their home then go to the next neighbour
         // this makes the enemy circle around area rather than stop
         Node nextValidNode = currentNode;
-        
+
         foreach (Node neighbour in currentNode.neighbours)
         {
             if (neighbour == prevNode || !neighbour.isTraversable)
@@ -175,9 +114,53 @@ public abstract class EnemyMovement : Movement
             List<Node> copyOfNeighbours = currentNode.neighbours.Where(x => x != prevNode && x.isTraversable).ToList();
             int rndIndex = Random.Range(0, copyOfNeighbours.Count);
 
-            nextNode = copyOfNeighbours[rndIndex];
+            if(copyOfNeighbours.Count == 0)
+                nextNode = prevNode;
+            else
+                nextNode = copyOfNeighbours[rndIndex];
         }
 
         return nextNode;
+    }
+
+    protected Node NextSafeNode()
+    {
+        Node safeNode;
+        List<Node> copyOfNeighbours = currentNode.neighbours.Where(x => x != prevNode && x.isTraversable).ToList();
+        int rndIndex = Random.Range(0, copyOfNeighbours.Count);
+
+        safeNode = copyOfNeighbours[rndIndex];
+
+        return safeNode;
+    }
+
+    protected override void MoveToNode(Node node)
+    {
+        isMoving = true;
+
+        transform.position += speed * Time.deltaTime * ((Vector3)node.position - transform.position).normalized;
+
+        if (Vector3.Distance(transform.position, node.position) <= reachedDistance)
+        {
+            transform.position = node.position;
+
+            prevNode = currentNode;
+            currentNode = targetNode;
+
+            if (currentEnemyState == EnemyStateManager.EnemyState.Chase)
+            {
+                forbiddenNode = null;
+                targetNode = NextChaseNode();
+            }
+            else if (currentEnemyState == EnemyStateManager.EnemyState.Scatter)
+            {
+                forbiddenNode = null;
+                targetNode = NextScatterNode();
+            }
+            else if (currentEnemyState == EnemyStateManager.EnemyState.Run)
+            {
+                targetNode = NextRunNode();
+            }
+        }
     }
 }
