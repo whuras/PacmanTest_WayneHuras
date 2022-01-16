@@ -10,8 +10,6 @@ public class Pellet : MonoBehaviour
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "Player")
-        {
             GameManager.Instance.EatPellet(this);
-        }
     }
 }

@@ -134,10 +134,10 @@ public class GameManager : MonoBehaviour
     {
         foreach(GameObject go in enemies)
         {
-            go.GetComponent<EnemyMovement>().RestartEnemy();
+            go.GetComponent<EnemyMovement>().RestartEnemyMovement();
         }
 
-        player.GetComponent<PlayerMovement>().RestartPlayer();
+        player.GetComponent<PlayerMovement>().RestartPlayerMovement();
     }
 
     private void NewGame()

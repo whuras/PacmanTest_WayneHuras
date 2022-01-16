@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class NodeManager : MonoBehaviour
 {
-    // Singleton
     private static NodeManager instance;
     public static NodeManager Instance => instance;
 
-    // Vars
     [SerializeField]
     private float stepSize = 0.5f;
 
     [SerializeField]
-    private int graphWidth = 20;
+    private int graphWidth = 26;
     public int GetGraphWidth() => graphWidth;
 
     [SerializeField]
-    private int graphHeight = 25;
+    private int graphHeight = 29;
     public int GetGraphHeight() => graphHeight;
 
     [SerializeField]
@@ -83,42 +81,7 @@ public class NodeManager : MonoBehaviour
             }
         }
 
-        if(closestNode == null)
-        {
-            Debug.LogError("Closest node is null -> NodeManager.ClosestNode()");
-        }
-
         return closestNode;
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (nodes == null)
-            return;
-
-        for (int i = 0; i < graphWidth; i++)
-        {
-            for (int j = 0; j < graphHeight; j++)
-            {
-                Node node = nodes[i, j];
-
-                if (!node.isTraversable)
-                {
-                    Gizmos.color = Color.black;
-                    Gizmos.DrawSphere(node.position, 0.1f);
-                }
-                else if (!node.canPlacePellet)
-                {
-                    Gizmos.color = Color.blue;
-                    Gizmos.DrawSphere(node.position, 0.1f);
-                }
-                else
-                {
-                    Gizmos.color = Color.yellow;
-                    Gizmos.DrawSphere(node.position, 0.1f);
-                }
-            }
-        }
     }
 
     private void MaintainSingleton()

@@ -21,7 +21,7 @@ public class EnemyStateManager : MonoBehaviour
     private float timer = 0;
     private float scatterTimer = 7; // Enemies scatter for 7 seconds
     private float chaseTimer = 20; // Enemies Chase for 20 seconds
-    private float runTimer = 7; // Enemies Run for 10 seconds
+    private float runTimer = 7; // Enemies Run for 7 seconds
 
     public void AddEnemyToEnemyStateManager(EnemyMovement enemy) => enemies.Add(enemy);
 
@@ -32,7 +32,7 @@ public class EnemyStateManager : MonoBehaviour
         pauseTimer = true;
         foreach (EnemyMovement enemy in enemies)
         {
-            enemy.PauseEnemy();
+            enemy.PauseEnemyMovement();
         }
     }
 
@@ -41,7 +41,7 @@ public class EnemyStateManager : MonoBehaviour
         pauseTimer = false;
         foreach (EnemyMovement enemy in enemies)
         {
-            enemy.UnpauseEnemy();
+            enemy.UnpauseEnemyMovement();
         }
     }
 

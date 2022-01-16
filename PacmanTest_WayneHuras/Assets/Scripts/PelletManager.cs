@@ -24,8 +24,8 @@ public class PelletManager : MonoBehaviour
 
     private List<Pellet> pellets;
 
-    public int remainingPellets { get; private set; }
     private int totalPellets;
+    public int remainingPellets { get; private set; }
     public void DecrementRemainingPellets() => remainingPellets -= 1;
     public void IncrementRemainingPellets() => remainingPellets += 1;
 
@@ -43,42 +43,31 @@ public class PelletManager : MonoBehaviour
         NodeManager nodeManager = NodeManager.Instance;
 
         Node[,] nodes = nodeManager.GetAllNodes();
+
         for (int i = 0; i < nodeManager.GetGraphWidth(); i++)
         {
             for (int j = 0; j < nodeManager.GetGraphHeight(); j++)
             {
                 Node node = nodes[i, j];
-                bool powerPelletCreated = false;
+                bool createPowerPellet = false;
 
                 if (node.canPlacePellet)
                 {
+                    // Run through list of powerPellet positions to determine if a regular or power pellet should be placed
                     for (int k = 0; k < powerPelletPositions.Length; k++)
                     {
                         if (node.position == (Vector2)powerPelletPositions[k].transform.position)
                         {
-                            GameObject powerPelletGO = Instantiate(powerPelletPrefab, transform);
-                            powerPelletGO.transform.position = node.position;
-
-                            Pellet powerPellet = powerPelletGO.GetComponent<Pellet>();
-                            powerPellet.SetPointValue(powerPelletPointValue);
-
-                            pellets.Add(powerPellet);
-
-                            IncrementRemainingPellets();
-                            powerPelletCreated = true;
+                            createPowerPellet = true;
                             break;
                         }
                     }
 
-                    if (powerPelletCreated)
-                        continue;
-
-                    GameObject pelletGO = Instantiate(pelletPrefab, transform);
+                    GameObject pelletGO = Instantiate(createPowerPellet ? powerPelletPrefab : pelletPrefab, transform);
                     pelletGO.transform.position = node.position;
-                    pelletGO.name = remainingPellets.ToString();
 
                     Pellet pellet = pelletGO.GetComponent<Pellet>();
-                    pellet.SetPointValue(pelletPointValue);
+                    pellet.SetPointValue(createPowerPellet ? powerPelletPointValue : pelletPointValue);
 
                     pellets.Add(pellet);
 
@@ -91,9 +80,7 @@ public class PelletManager : MonoBehaviour
     public void ResetPellets()
     {
         foreach(Pellet pellet in pellets)
-        {
             pellet.gameObject.SetActive(true);
-        }
 
         remainingPellets = totalPellets;
     }

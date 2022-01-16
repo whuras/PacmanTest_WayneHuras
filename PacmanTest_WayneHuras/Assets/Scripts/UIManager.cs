@@ -29,14 +29,11 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image[] lives;
 
-    private SaveSystem saveSystem;
-
     private void Awake() => MaintainSingleton();
 
     private void Start()
     {
-        saveSystem = SaveSystem.Instance;
-        int savedHighScore = saveSystem.GetSavedHighScore();
+        int savedHighScore = SaveSystem.Instance.GetSavedHighScore();
         SetHighScore(savedHighScore);
     }
 
@@ -62,19 +59,11 @@ public class UIManager : MonoBehaviour
     public void UpdateCurrentScore(int currentScore)
     {
         SetCurrentScore(currentScore);
-        if(currentScore > saveSystem.GetSavedHighScore())
+        if(currentScore > SaveSystem.Instance.GetSavedHighScore())
         {
-            saveSystem.SaveHighScore(currentScore);
+            SaveSystem.Instance.SaveHighScore(currentScore);
             SetHighScore(currentScore);
         }
-    }
-
-    private void MaintainSingleton()
-    {
-        if (instance != null && instance != this)
-            Destroy(this);
-        else
-            instance = this;
     }
 
     public void UpdateLives(int livesLeft)
@@ -86,5 +75,13 @@ public class UIManager : MonoBehaviour
             else
                 lives[i].enabled = false;
         }
+    }
+
+    private void MaintainSingleton()
+    {
+        if (instance != null && instance != this)
+            Destroy(this);
+        else
+            instance = this;
     }
 }

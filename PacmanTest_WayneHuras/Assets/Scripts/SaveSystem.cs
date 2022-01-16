@@ -9,16 +9,9 @@ public class SaveSystem : MonoBehaviour
 
     private void Awake() => MaintainSingleton();
 
-    public int GetSavedHighScore()
-    {
-        int highScore = PlayerPrefs.GetInt("highScore", 0);
-        return highScore;
-    }
+    public int GetSavedHighScore() => PlayerPrefs.GetInt("highScore", 0);
 
-    public void SaveHighScore(int highScore)
-    {
-        PlayerPrefs.SetInt("highScore", highScore);
-    }
+    public void SaveHighScore(int highScore) => PlayerPrefs.SetInt("highScore", highScore);
 
     private void MaintainSingleton()
     {

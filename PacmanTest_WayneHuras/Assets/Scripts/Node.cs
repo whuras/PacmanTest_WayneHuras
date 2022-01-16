@@ -5,17 +5,22 @@ using UnityEngine;
 public class Node
 {
     public Vector2 position { get; private set; }
-    public List<Node> neighbours { get; private set; }
     public bool isTraversable { get; private set; }
     public bool canPlacePellet { get; private set; }
+    public List<Node> neighbours { get; private set; }
+    private void AddNeighbour(Node neighbour) => neighbours.Add(neighbour);
 
     // For Pathfinding
-    public int iPos;
-    public int jPos;
-    public int gCost;
-    public int hCost;
-    public int fCost;
-    public Node prevNode;
+    public Node prevNode { get; private set; }
+    public int iPos { get; private set; }
+    public int jPos { get; private set; }
+    public int gCost { get; private set; }
+    public int hCost { get; private set; }
+    public int fCost { get; private set; }
+    public void SetPrevNode(Node prevNode) => this.prevNode = prevNode;
+    public void SetGCost(int value) => gCost = value;
+    public void SetHCost(int value) => hCost = value;
+    public void SetFCost(int value) => fCost = value;
 
     public Node(Vector3 position, LayerMask wallLayer, LayerMask emptyLayer, int i, int j)
     {
@@ -71,10 +76,5 @@ public class Node
         }
 
         return null;
-    }
-
-    private void AddNeighbour(Node neighbour)
-    {
-        neighbours.Add(neighbour);
     }
 }

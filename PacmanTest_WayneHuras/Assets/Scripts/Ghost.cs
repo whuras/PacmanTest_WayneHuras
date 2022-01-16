@@ -39,7 +39,7 @@ public class Ghost : MonoBehaviour
             if(enemyMovement.currentEnemyState == EnemyStateManager.EnemyState.Run)
             {
                 GameManager.Instance.EatEnemy(this);
-                enemyMovement.ResetEnemy();
+                enemyMovement.ResetEnemyMovement();
             }
             else
             {

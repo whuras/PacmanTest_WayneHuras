@@ -19,53 +19,53 @@ public abstract class EnemyMovement : Movement
 
     public EnemyStateManager.EnemyState currentEnemyState;
     private EnemyStateManager.EnemyState prevState;
+    private EnemyStateManager.EnemyState initialState;
 
     private Ghost ghost;
-
-    private EnemyStateManager.EnemyState initialState;
 
     private new void Start()
     {
         base.Start();
+
         ghost = GetComponent<Ghost>();
-        EnemyStateManager.Instance.AddEnemyToEnemyStateManager(this);
-        homeNode = GetHomeNode(homeGameObject);
+        homeNode = NodeManager.Instance.ClosestNode(homeGameObject.transform.position);
         initialState = currentEnemyState;
+
+        EnemyStateManager.Instance.AddEnemyToEnemyStateManager(this);
     }
 
     private void Update()
     {
         if (currentEnemyState != EnemyStateManager.EnemyState.Wait)
-        {
             MoveToNode(targetNode);
-        }
     }
 
-    public void PauseEnemy()
+    public void PauseEnemyMovement()
     {
         prevState = currentEnemyState;
         currentEnemyState = EnemyStateManager.EnemyState.Wait;
     }
 
-    public void UnpauseEnemy()
+    public void UnpauseEnemyMovement()
     {
         currentEnemyState = prevState;
     }
 
     // Reset Enemy to initial position on map
-    public void ResetEnemy()
+    public void ResetEnemyMovement()
     {
-        CancelInvoke();
-        ghost.ShowNormalSprite();
-        speed = normalSpeed;
-        transform.position = restartNode.position;
-        currentNode = restartNode;
-        targetNode = currentNode;
+        ResetNodesSpeedSprite();
         currentEnemyState = EnemyStateManager.EnemyState.Scatter;
     }
 
     // Restart Enemy to newGame state
-    public void RestartEnemy()
+    public void RestartEnemyMovement()
+    {
+        ResetNodesSpeedSprite();
+        currentEnemyState = initialState;
+    }
+
+    private void ResetNodesSpeedSprite()
     {
         CancelInvoke();
         ghost.ShowNormalSprite();
@@ -73,7 +73,6 @@ public abstract class EnemyMovement : Movement
         transform.position = restartNode.position;
         currentNode = restartNode;
         targetNode = currentNode;
-        currentEnemyState = initialState;
     }
 
     public void ActivateRunState(float runDuration)
@@ -180,12 +179,5 @@ public abstract class EnemyMovement : Movement
         }
 
         return nextNode;
-    }
-
-    protected Node GetHomeNode(GameObject homeGameObject)
-    {
-        Vector3 homePosition = homeGameObject.transform.position;
-        Node closestNode = NodeManager.Instance.ClosestNode(homePosition);
-        return closestNode;
     }
 }

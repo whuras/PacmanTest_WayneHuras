@@ -16,11 +16,6 @@ public class PlayerMovement : Movement
         Vector2.right
     };
 
-    private new void Start()
-    {
-        base.Start();
-    }
-
     private void Update()
     {
         if (targetNode != null)
@@ -34,7 +29,7 @@ public class PlayerMovement : Movement
         }
     }
 
-    public void RestartPlayer()
+    public void RestartPlayerMovement()
     {
         transform.position = restartNode.position;
         currentNode = restartNode;
@@ -57,14 +52,12 @@ public class PlayerMovement : Movement
         }
     }
 
-    public Node NextNode()
+    private Node NextNode()
     {
         Node nextNode;
 
         if (queuedDirection != Vector2.zero)
-        {
             queuedNode = currentNode.GetNeighbourInDirection(queuedDirection, true);
-        }
 
         if (queuedNode != null)
         {

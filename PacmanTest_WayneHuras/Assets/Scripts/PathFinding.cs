@@ -16,9 +16,7 @@ public class PathFinding
         closedList = new List<Node>();
 
         foreach(Node node in excludeNodes)
-        {
             closedList.Add(node);
-        }
 
         openList.Add(startNode);
 
@@ -27,24 +25,22 @@ public class PathFinding
             for (int j = 0; j < nodeManager.GetGraphHeight(); j++)
             {
                 Node resetNode = nodes[i, j];
-                resetNode.gCost = int.MaxValue;
-                resetNode.fCost = CalculateFCost(resetNode);
-                resetNode.prevNode = null;
+                resetNode.SetGCost(int.MaxValue);
+                resetNode.SetFCost(CalculateFCost(resetNode));
+                resetNode.SetPrevNode(null);
             }
         }
 
-        startNode.gCost = 0;
-        startNode.hCost = CalculateHCost(startNode, endNode);
-        startNode.fCost = CalculateFCost(startNode);
+        startNode.SetGCost(0);
+        startNode.SetHCost(CalculateHCost(startNode, endNode));
+        startNode.SetFCost(CalculateFCost(startNode));
 
         while(openList.Count > 0)
         {
             Node currentNode = GetSmallestFCostNode(openList);
 
             if(currentNode == endNode)
-            {
                 return CalculatePath(endNode);
-            }
 
             openList.Remove(currentNode);
             closedList.Add(currentNode);
@@ -60,15 +56,13 @@ public class PathFinding
                 int testGCost = currentNode.gCost + CalculateHCost(currentNode, neighbour);
                 if(testGCost < neighbour.gCost)
                 {
-                    neighbour.prevNode = currentNode;
-                    neighbour.gCost = testGCost;
-                    neighbour.hCost = CalculateHCost(neighbour, endNode);
-                    neighbour.fCost = CalculateFCost(neighbour);
+                    neighbour.SetPrevNode(currentNode);
+                    neighbour.SetGCost(testGCost);
+                    neighbour.SetHCost(CalculateHCost(neighbour, endNode));
+                    neighbour.SetFCost(CalculateFCost(neighbour));
 
                     if (!openList.Contains(neighbour))
-                    {
                         openList.Add(neighbour);
-                    }
                 }
             }
         }
@@ -82,6 +76,7 @@ public class PathFinding
     {
         int xDistance = Mathf.Abs(from.iPos - to.iPos);
         int yDistance = Mathf.Abs(from.jPos - to.jPos);
+
         return xDistance + yDistance;
     }
 
@@ -91,9 +86,7 @@ public class PathFinding
         foreach(Node node in nodes)
         {
             if(lowestFCostNode.fCost > node.fCost)
-            {
                 lowestFCostNode = node;
-            }
         }
 
         return lowestFCostNode;
