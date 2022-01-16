@@ -41,6 +41,17 @@ public abstract class EnemyMovement : Movement
         }
     }
 
+    public void PauseEnemy()
+    {
+        prevState = currentEnemyState;
+        currentEnemyState = EnemyStateManager.EnemyState.Wait;
+    }
+
+    public void UnpauseEnemy()
+    {
+        currentEnemyState = prevState;
+    }
+
     // Reset Enemy to initial position on map
     public void ResetEnemy()
     {

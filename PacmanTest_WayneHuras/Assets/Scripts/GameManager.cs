@@ -20,12 +20,19 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int startingLives = 3;
     public int lives { get; private set; }
-    public void DecrementLives() => lives -= 0;
+    public void DecrementLives() => lives -= 1;
     private void SetLives(int value) => lives = value;
 
     public int score { get; private set; }
-    public void IncreaseScore(int amount) => score += amount;
     private void SetScore(int value) => score = value;
+    
+    public GameState currentGameState { get; private set; }
+    public enum GameState
+    {
+        Wait,
+        Play,
+        GameOver
+    }
 
     private void Awake()
     {
@@ -34,23 +41,47 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        NewGame();
+        EnterWaitState();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SceneManager.LoadScene("Welcome");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            NewGame();
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SceneManager.LoadScene("GameOver");
-        }
+        if(currentGameState == GameState.Wait && Input.anyKeyDown)
+            EnterPlayState();
+        else if (currentGameState == GameState.GameOver && Input.anyKeyDown)
+            EnterWaitState();
+    }
+
+    public void EnterWaitState()
+    {
+        currentGameState = GameState.Wait;
+        NewGame();
+        EnemyStateManager.Instance.PauseEnemies();
+        player.SetActive(false);
+        UIManager.Instance.Ready();
+    }
+
+    public void EnterPlayState()
+    {
+        currentGameState = GameState.Play;
+        EnemyStateManager.Instance.UnpauseEnemies();
+        player.SetActive(true);
+        UIManager.Instance.GameStarted();
+        NewGame();
+    }
+
+    public void EnterGameOverState()
+    {
+        currentGameState = GameState.GameOver;
+        EnemyStateManager.Instance.PauseEnemies();
+        player.SetActive(false);
+        UIManager.Instance.ShowGameOver();
+    }
+
+    public void IncreaseScore(int amount)
+    {
+        score += amount;
+        UIManager.Instance.UpdateCurrentScore(score);
     }
 
     public void EatPellet(Pellet pellet)
@@ -82,14 +113,12 @@ public class GameManager : MonoBehaviour
     public void EatPlayer()
     {
         DecrementLives();
+        UIManager.Instance.UpdateLives(lives);
 
-        if(lives <= 0)
+        ResetPositions();
+        if (lives <= 0)
         {
-            GameOver();
-        }
-        else
-        {
-            ResetPositions();
+            EnterGameOverState();
         }
     }
 
@@ -112,7 +141,9 @@ public class GameManager : MonoBehaviour
 
     private void NewRound()
     {
-        Debug.Log("New Round");
+        ResetPositions();
+        UIManager.Instance.UpdateLives(lives);
+        player.SetActive(true);
         PelletManager pelletManager = PelletManager.Instance;
         pelletManager.ResetPellets();
     }
@@ -128,10 +159,5 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-    }
-
-    private void GameOver()
-    {
-
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 323777778222525876}
   - component: {fileID: 5301081932624547995}
   - component: {fileID: 7143596225192800428}
+  - component: {fileID: 6369227947544946996}
   m_Layer: 0
   m_Name: PowerPellet
   m_TagString: Untagged
@@ -93,6 +94,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ad68bb5360ae0447b2c5a5f9d362ae1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  powerDuration: 7
+--- !u!114 &6369227947544946996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653155764790961837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b405f8caea0aee47bdde44c9a1e8c3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashObject: {fileID: 3442993152871122716}
+  flashInverval: 0.25
 --- !u!1 &3442993152871122716
 GameObject:
   m_ObjectHideFlags: 0
