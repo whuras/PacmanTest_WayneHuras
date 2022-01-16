@@ -27,6 +27,9 @@ public class GameManager : MonoBehaviour
     private void SetScore(int value) => score = value;
     
     public GameState currentGameState { get; private set; }
+
+    private AudioManager audioManager;
+
     public enum GameState
     {
         Wait,
@@ -41,6 +44,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        audioManager = AudioManager.Instance;
         EnterWaitState();
     }
 
@@ -54,6 +58,7 @@ public class GameManager : MonoBehaviour
 
     public void EnterWaitState()
     {
+        audioManager.PlayIntro();
         currentGameState = GameState.Wait;
         NewGame();
         EnemyStateManager.Instance.PauseEnemies();
@@ -72,6 +77,7 @@ public class GameManager : MonoBehaviour
 
     public void EnterGameOverState()
     {
+        audioManager.PlayDeath();
         currentGameState = GameState.GameOver;
         EnemyStateManager.Instance.PauseEnemies();
         player.SetActive(false);
@@ -85,7 +91,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void EatPellet(Pellet pellet)
-    {   
+    {
         IncreaseScore(pellet.pointValue);
         pellet.gameObject.SetActive(false);
 
@@ -101,6 +107,7 @@ public class GameManager : MonoBehaviour
 
     public void EatEnemy(Ghost ghost)
     {
+        audioManager.PlayEatGhost();
         IncreaseScore(ghost.ghostPointValue);
     }
 
@@ -113,9 +120,10 @@ public class GameManager : MonoBehaviour
     public void EatPlayer()
     {
         DecrementLives();
-        UIManager.Instance.UpdateLives(lives);
-
         ResetPositions();
+
+        UIManager.Instance.UpdateLives(lives);
+        
         if (lives <= 0)
         {
             EnterGameOverState();

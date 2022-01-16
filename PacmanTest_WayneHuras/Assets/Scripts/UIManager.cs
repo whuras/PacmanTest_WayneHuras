@@ -79,7 +79,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateLives(int livesLeft)
     {
-        for(int i = 0; i < lives.Length; i++)
+        for (int i = 0; i < lives.Length; i++)
         {
             if (i < livesLeft)
                 lives[i].enabled = true;
